@@ -1,50 +1,47 @@
+package com.example.MovieTicketBooking;
+
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 public class Show {
-    int id;
-    Theatre theatre;
-    Movie movie;
-    Date startTime;
-    Date endTime;
-    List<ShowSeat> showSeatList;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int showId;
 
-    public int getId() {
-        return id;
-    }
+    @ManyToOne
+    private Theatre theatre;
 
-    public Theatre getTheatre() {
-        return theatre;
-    }
+    @ManyToOne
+    private Movie movie;
 
-    public Movie getMovie() {
-        return movie;
-    }
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startTime;
 
-    public Date getStartTime() {
-        return startTime;
-    }
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endTime;
 
-    public Date getEndTime() {
-        return endTime;
-    }
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
+    private List<ShowSeat> showSeatList;
 
-    public ShowSeat getShowSeatById(int id) {
-        for(ShowSeat seat: showSeatList){
-            if(seat.id == id){
-                return seat;
-            }
-        }
-        return null;
-    }
+    public Show() {}
 
-    public void bookSeat(int id){
-        ShowSeat seat = getShowSeatById(id);
-        seat.showSeatStatus = ShowSeatStatus.BOOKED;
-    }
+    public int getShowId() { return showId; }
+    public void setShowId(int showId) { this.showId = showId; }
 
-    public void blockSeat(int id){
-        ShowSeat seat = getShowSeatById(id);
-        seat.showSeatStatus = ShowSeatStatus.BLOCKED;
-    }
+    public Theatre getTheatre() { return theatre; }
+    public void setTheatre(Theatre theatre) { this.theatre = theatre; }
+
+    public Movie getMovie() { return movie; }
+    public void setMovie(Movie movie) { this.movie = movie; }
+
+    public Date getStartTime() { return startTime; }
+    public void setStartTime(Date startTime) { this.startTime = startTime; }
+
+    public Date getEndTime() { return endTime; }
+    public void setEndTime(Date endTime) { this.endTime = endTime; }
+
+    public List<ShowSeat> getShowSeatList() { return showSeatList; }
+    public void setShowSeatList(List<ShowSeat> showSeatList) { this.showSeatList = showSeatList; }
 }

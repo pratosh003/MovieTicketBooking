@@ -1,36 +1,32 @@
-public class ShowSeat extends Seat{
-    int id;
-    Double price;
-    Show show;
-    ShowSeatStatus showSeatStatus;
+package com.example.MovieTicketBooking;
 
-    public ShowSeat(Double price, Show show, ShowSeatStatus showSeatStatus) {
-        this.price = price;
-        this.show = show;
-        this.showSeatStatus = showSeatStatus;
-    }
+import jakarta.persistence.*;
 
-    public Double getPrice() {
-        return price;
-    }
+@Entity
+public class ShowSeat extends Seat {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int showSeatId;
 
-    public void setPrice(Double price) {
-        this.price = price;
-    }
+    private Double price;
 
-    public Show getShow() {
-        return show;
-    }
+    @ManyToOne
+    private Show show;
 
-    public void setShow(Show show) {
-        this.show = show;
-    }
+    @Enumerated(EnumType.STRING)
+    private ShowSeatStatus showSeatStatus;
 
-    public ShowSeatStatus getShowSeatStatus() {
-        return showSeatStatus;
-    }
+    public ShowSeat() {}
 
-    public void setShowSeatStatus(ShowSeatStatus showSeatStatus) {
-        this.showSeatStatus = showSeatStatus;
-    }
+    public int getShowSeatId() { return showSeatId; }
+    public void setShowSeatId(int showSeatId) { this.showSeatId = showSeatId; }
+
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
+
+    public Show getShow() { return show; }
+    public void setShow(Show show) { this.show = show; }
+
+    public ShowSeatStatus getShowSeatStatus() { return showSeatStatus; }
+    public void setShowSeatStatus(ShowSeatStatus showSeatStatus) { this.showSeatStatus = showSeatStatus; }
 }
