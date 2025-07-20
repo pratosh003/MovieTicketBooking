@@ -1,3 +1,5 @@
+package com.example.MovieTicketBooking;
+
 public enum ShowSeatStatus {
-    BOOKED, AVAILABLE, BLOCKED;
+    BOOKED, BLOCKED, AVAILABLE;
 }

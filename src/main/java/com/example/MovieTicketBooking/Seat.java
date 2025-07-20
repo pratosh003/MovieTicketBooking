@@ -1,23 +1,25 @@
 package com.example.MovieTicketBooking;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
+@Table(name = "SEAT")
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int seatId;
 
+    @Column(name = "seat_number")
     private String number;
 
     @Enumerated(EnumType.STRING)
     private SeatType seatType;
 
+    @ManyToOne
+    @JoinColumn(name = "screen_id") // FK to SCREEN table
+    private Screen screen;
     public Seat() {}
 
     public int getSeatId() { return seatId; }
@@ -26,6 +28,4 @@ public class Seat {
     public String getNumber() { return number; }
     public void setNumber(String number) { this.number = number; }
 
-    public SeatType getSeatType() { return seatType; }
-    public void setSeatType(SeatType seatType) { this.seatType = seatType; }
 }

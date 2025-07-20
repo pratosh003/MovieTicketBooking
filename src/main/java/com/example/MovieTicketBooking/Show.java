@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "MOVIE_SHOW")
 public class Show {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class Show {
     private Date endTime;
 
     @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
-    private List<ShowSeat> showSeatList;
+    private List<ShowSeat> showSeatStatusList;
 
     public Show() {}
 
@@ -42,6 +43,10 @@ public class Show {
     public Date getEndTime() { return endTime; }
     public void setEndTime(Date endTime) { this.endTime = endTime; }
 
-    public List<ShowSeat> getShowSeatList() { return showSeatList; }
-    public void setShowSeatList(List<ShowSeat> showSeatList) { this.showSeatList = showSeatList; }
+    public List<ShowSeat> getShowSeatList() { return showSeatStatusList; }
+    public void setShowSeatList(List<ShowSeat> showSeatStatusList) { this.showSeatStatusList = showSeatStatusList; }
+
+    public int getMovieId(){
+        return this.movie.getMovieId();
+    }
 }

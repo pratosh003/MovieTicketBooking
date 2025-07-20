@@ -1,9 +1,12 @@
 package com.example.MovieTicketBooking;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
-public class ShowSeat extends Seat {
+@Data
+@Table(name = "SHOW_SEAT")
+public class ShowSeat{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int showSeatId;
@@ -12,6 +15,9 @@ public class ShowSeat extends Seat {
 
     @ManyToOne
     private Show show;
+
+    @OneToOne
+    private Seat seat;
 
     @Enumerated(EnumType.STRING)
     private ShowSeatStatus showSeatStatus;

@@ -1,11 +1,9 @@
 package com.example.MovieTicketBooking;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "MOVIE")
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
