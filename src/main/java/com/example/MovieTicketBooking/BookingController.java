@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -16,5 +18,24 @@ public class BookingController {
     @GetMapping("/getMoviesByCity/{city}")
     public Set<Movie> getMoviesByCity(@PathVariable String city){
         return bookingService.getMoviesByCity(city);
+    }
+
+    @ResponseBody
+    @GetMapping("/getShowsByMovieAndCity/{city}/{movieId}")
+    Map<Theatre, List<ShowResponse>> getShowsByMovieAndCity(@PathVariable String city, @PathVariable int movieId){
+        return bookingService.getShowsByMovieAndCity(city, movieId);
+    }
+
+    @ResponseBody
+    @GetMapping("/getShowSeatsByShow/{showId}")
+    List<ShowSeatResponse> getShowSeatsByShow(@PathVariable int showId){
+        return bookingService.getShowSeatsByShow(showId);
+    }
+
+
+    @PostMapping("/createBooking")
+    @ResponseBody
+    Booking createBooking(BookingRequest bookingRequest){
+        return bookingService.createBooking(bookingRequest);
     }
 }

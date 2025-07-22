@@ -1,5 +1,5 @@
 package com.example.MovieTicketBooking;
 
 public enum SeatType {
-    RECLINER, GOLD, SILVER;
+    RECLINER, GOLD, SILVER, REGULAR, VIP;
 }
