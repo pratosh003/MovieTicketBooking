@@ -17,6 +17,15 @@ public class BookingService {
     @Autowired
     MovieRepo movieRepo;
 
+    @Autowired
+    ShowSeatRepo showSeatRepo;
+
+    @Autowired
+    BookingRepo bookingRepo;
+
+    @Autowired
+    UserRepo userRepo;
+
     Set<Movie> getMoviesByCity(String city){
         List<Theatre> theatreByCity = getTheatreByCity(city);
         List<Integer> theatreId = new ArrayList<>();
@@ -69,6 +78,10 @@ public class BookingService {
         return showRepo.findByMovie_MovieId(movieId);
     }
 
+    ShowSeat getShowSeatById(int showSeatId){
+        return showSeatRepo.findById(showSeatId).get();
+    }
+
     Show getShowById(int showId){
         return showRepo.findById(showId).get();
     }
@@ -87,9 +100,35 @@ public class BookingService {
         return showSeatResponses;
     }
 
-    Booking createBooking(BookingRequest bookingRequest){
+    BookingResponse createBooking(BookingRequest bookingRequest){
         int showId = bookingRequest.getShowId();
         List<Integer> selectedShowSeats = bookingRequest.getSelectedShowSeats();
-        return null;
+        User user = bookingRequest.getUser();
+
+        userRepo.save(user);
+
+        List<ShowSeat> showSeats = new ArrayList<>();
+        for(int showSeatId: selectedShowSeats){
+            showSeats.add(getShowSeatById(showSeatId));
+        }
+
+        Booking booking = new Booking(user, getShowById(showId), selectedShowSeats, BookingStatus.BOOKED);
+        bookingRepo.save(booking);
+
+        List<String> seatNums = new ArrayList<>();
+        for(ShowSeat showSeat: showSeats){
+            showSeat.setShowSeatStatus(ShowSeatStatus.BOOKED);
+            showSeatRepo.save(showSeat);
+            seatNums.add(String.valueOf(showSeat.getShowSeatId()));
+        }
+
+        BookingResponse bookingResponse = new BookingResponse(
+                booking.getBookingId(), booking.getShow().getTheatre().getName(),
+                String.valueOf(booking.getShow().getScreen().getScreenId()), booking.getShow().getMovie(),
+                seatNums, booking.getBookingStatus()
+        );
+
+        return bookingResponse;
     }
+
 }

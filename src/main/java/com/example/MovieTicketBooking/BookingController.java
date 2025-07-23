@@ -32,10 +32,10 @@ public class BookingController {
         return bookingService.getShowSeatsByShow(showId);
     }
 
-
     @PostMapping("/createBooking")
     @ResponseBody
-    Booking createBooking(BookingRequest bookingRequest){
+    BookingResponse createBooking(@RequestBody BookingRequest bookingRequest){
         return bookingService.createBooking(bookingRequest);
     }
+
 }

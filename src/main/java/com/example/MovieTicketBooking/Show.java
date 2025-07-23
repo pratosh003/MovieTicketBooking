@@ -1,12 +1,14 @@
 package com.example.MovieTicketBooking;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "MOVIE_SHOW")
-public class Show {
+public class Show{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int showId;
@@ -25,6 +27,11 @@ public class Show {
 
     @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
     private List<ShowSeat> showSeatStatusList;
+
+
+    @ManyToOne
+    @JoinColumn(name = "screen_id")
+    private Screen screen;
 
     public Show() {}
 
@@ -48,5 +55,13 @@ public class Show {
 
     public int getMovieId(){
         return this.movie.getMovieId();
+    }
+
+    public void setScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public Screen getScreen(){
+        return screen;
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "BOOKING")
-public class Booking {
+public class Booking{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingId;
@@ -16,18 +16,18 @@ public class Booking {
     @ManyToOne
     private Show show;
 
-    @ManyToMany
-    private List<ShowSeat> bookedSeats;
+    @Column(name = "booked_seats_id")
+    private List<Integer> bookedSeatsId;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus bookingStatus;
 
     public Booking() {}
 
-    public Booking(User user, Show show, List<ShowSeat> bookedSeats, BookingStatus bookingStatus) {
+    public Booking(User user, Show show, List<Integer> bookedSeatsId, BookingStatus bookingStatus) {
         this.user = user;
         this.show = show;
-        this.bookedSeats = bookedSeats;
+        this.bookedSeatsId = bookedSeatsId;
         this.bookingStatus = bookingStatus;
     }
 
@@ -55,12 +55,12 @@ public class Booking {
         this.show = show;
     }
 
-    public List<ShowSeat> getBookedSeats() {
-        return bookedSeats;
+    public List<Integer> getBookedSeats() {
+        return bookedSeatsId;
     }
 
-    public void setBookedSeats(List<ShowSeat> bookedSeats) {
-        this.bookedSeats = bookedSeats;
+    public void setBookedSeatsId(List<Integer> bookedSeatsId) {
+        this.bookedSeatsId = bookedSeatsId;
     }
 
     public BookingStatus getBookingStatus() {
