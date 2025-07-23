@@ -100,6 +100,8 @@ public class BookingService {
         return showSeatResponses;
     }
 
+
+
     BookingResponse createBooking(BookingRequest bookingRequest){
         int showId = bookingRequest.getShowId();
         List<Integer> selectedShowSeats = bookingRequest.getSelectedShowSeats();
@@ -131,4 +133,26 @@ public class BookingService {
         return bookingResponse;
     }
 
+    BookingResponse cancelBooking(int bookingId){
+        Booking booking = bookingRepo.findById(bookingId).get();
+
+        List<String> seatNums = new ArrayList<>();
+        for(int showSeatId: booking.getBookedSeats()){
+            ShowSeat showSeatToCancel = getShowSeatById(showSeatId);
+            showSeatToCancel.setShowSeatStatus(ShowSeatStatus.AVAILABLE);
+            showSeatRepo.save(showSeatToCancel);
+            seatNums.add(String.valueOf(showSeatToCancel.getShowSeatId()));
+        }
+
+        booking.setBookingStatus(BookingStatus.CANCELED);
+        bookingRepo.save(booking);
+
+        BookingResponse bookingResponse = new BookingResponse(
+                booking.getBookingId(), booking.getShow().getTheatre().getName(),
+                String.valueOf(booking.getShow().getScreen().getScreenId()), booking.getShow().getMovie(),
+                seatNums, booking.getBookingStatus()
+        );
+
+        return bookingResponse;
+    }
 }

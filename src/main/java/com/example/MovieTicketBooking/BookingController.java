@@ -38,4 +38,9 @@ public class BookingController {
         return bookingService.createBooking(bookingRequest);
     }
 
+    @PutMapping("/cancelBooking")
+    @ResponseBody
+    BookingResponse cancelBooking(@RequestParam("bookingId") int bookingId){
+        return bookingService.cancelBooking(bookingId);
+    }
 }
