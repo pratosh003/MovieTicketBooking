@@ -11,9 +11,11 @@ import java.util.Set;
 @Controller
 @RequestMapping("/booking")
 public class BookingController {
-
-    @Autowired
     BookingService bookingService;
+    @Autowired
+    public BookingController(BookingService bookingService){
+        this.bookingService = bookingService;
+    }
     @ResponseBody
     @GetMapping("/getMoviesByCity/{city}")
     public Set<Movie> getMoviesByCity(@PathVariable String city){

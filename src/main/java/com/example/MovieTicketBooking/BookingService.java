@@ -1,6 +1,5 @@
 package com.example.MovieTicketBooking;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -8,23 +7,26 @@ import java.util.*;
 @Service
 public class BookingService {
 
-    @Autowired
     ShowRepo showRepo;
-
-    @Autowired
     TheatreRepo theatreRepo;
-
-    @Autowired
     MovieRepo movieRepo;
-
-    @Autowired
     ShowSeatRepo showSeatRepo;
-
-    @Autowired
     BookingRepo bookingRepo;
-
-    @Autowired
     UserRepo userRepo;
+
+    public BookingService(ShowRepo showRepo,
+                          TheatreRepo theatreRepo,
+                          MovieRepo movieRepo,
+                          ShowSeatRepo showSeatRepo,
+                          BookingRepo bookingRepo,
+                          UserRepo userRepo) {
+        this.showRepo = showRepo;
+        this.theatreRepo = theatreRepo;
+        this.movieRepo = movieRepo;
+        this.showSeatRepo = showSeatRepo;
+        this.bookingRepo = bookingRepo;
+        this.userRepo = userRepo;
+    }
 
     Set<Movie> getMoviesByCity(String city){
         List<Theatre> theatreByCity = getTheatreByCity(city);
@@ -103,32 +105,38 @@ public class BookingService {
 
 
     BookingResponse createBooking(BookingRequest bookingRequest){
-        int showId = bookingRequest.getShowId();
-        List<Integer> selectedShowSeats = bookingRequest.getSelectedShowSeats();
-        User user = bookingRequest.getUser();
+        BookingResponse bookingResponse;
+        try {
+            int showId = bookingRequest.getShowId();
+            List<Integer> selectedShowSeats = bookingRequest.getSelectedShowSeats();
+            User user = bookingRequest.getUser();
 
-        userRepo.save(user);
+            userRepo.save(user);
 
-        List<ShowSeat> showSeats = new ArrayList<>();
-        for(int showSeatId: selectedShowSeats){
-            showSeats.add(getShowSeatById(showSeatId));
+            List<ShowSeat> showSeats = new ArrayList<>();
+            for (int showSeatId : selectedShowSeats) {
+                showSeats.add(getShowSeatById(showSeatId));
+            }
+
+            Booking booking = new Booking(user, getShowById(showId), selectedShowSeats, BookingStatus.BOOKED);
+            bookingRepo.save(booking);
+
+            List<String> seatNums = new ArrayList<>();
+            for (ShowSeat showSeat : showSeats) {
+                showSeat.setShowSeatStatus(ShowSeatStatus.BOOKED);
+                showSeatRepo.save(showSeat);
+                seatNums.add(String.valueOf(showSeat.getShowSeatId()));
+            }
+
+            bookingResponse = new BookingResponse(
+                    booking.getBookingId(), booking.getShow().getTheatre().getName(),
+                    String.valueOf(booking.getShow().getScreen().getScreenId()), booking.getShow().getMovie(),
+                    seatNums, booking.getBookingStatus()
+            );
         }
-
-        Booking booking = new Booking(user, getShowById(showId), selectedShowSeats, BookingStatus.BOOKED);
-        bookingRepo.save(booking);
-
-        List<String> seatNums = new ArrayList<>();
-        for(ShowSeat showSeat: showSeats){
-            showSeat.setShowSeatStatus(ShowSeatStatus.BOOKED);
-            showSeatRepo.save(showSeat);
-            seatNums.add(String.valueOf(showSeat.getShowSeatId()));
+        catch (Exception e){
+            throw new RuntimeException(e.getMessage());
         }
-
-        BookingResponse bookingResponse = new BookingResponse(
-                booking.getBookingId(), booking.getShow().getTheatre().getName(),
-                String.valueOf(booking.getShow().getScreen().getScreenId()), booking.getShow().getMovie(),
-                seatNums, booking.getBookingStatus()
-        );
 
         return bookingResponse;
     }
