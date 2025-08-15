@@ -1,6 +1,8 @@
 package com.example.MovieTicketBooking;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +15,7 @@ import java.util.Set;
 public class BookingController {
     BookingService bookingService;
     @Autowired
-    public BookingController(BookingService bookingService){
+    public BookingController(@Qualifier("BookingService") BookingService bookingService){
         this.bookingService = bookingService;
     }
     @ResponseBody
@@ -45,4 +47,11 @@ public class BookingController {
     BookingResponse cancelBooking(@RequestParam("bookingId") int bookingId){
         return bookingService.cancelBooking(bookingId);
     }
+
+    @PostMapping("/create-payment")
+    @ResponseBody
+    Payment createPayment(PaymentRequest paymentRequest){
+        return bookingService.createPayment(paymentRequest);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.MovieTicketBooking;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "MOVIE_SHOW")
+@Builder
 public class Show{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

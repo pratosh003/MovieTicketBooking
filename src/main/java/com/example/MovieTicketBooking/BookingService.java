@@ -1,10 +1,13 @@
 package com.example.MovieTicketBooking;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Primary
 public class BookingService {
 
     ShowRepo showRepo;
@@ -13,19 +16,25 @@ public class BookingService {
     ShowSeatRepo showSeatRepo;
     BookingRepo bookingRepo;
     UserRepo userRepo;
+    PaymentCaller paymentCaller;
 
+    void test(){
+        Show show = Show.builder().showId(1).build();
+    }
     public BookingService(ShowRepo showRepo,
                           TheatreRepo theatreRepo,
                           MovieRepo movieRepo,
                           ShowSeatRepo showSeatRepo,
                           BookingRepo bookingRepo,
-                          UserRepo userRepo) {
+                          UserRepo userRepo,
+                          PaymentCaller paymentCaller) {
         this.showRepo = showRepo;
         this.theatreRepo = theatreRepo;
         this.movieRepo = movieRepo;
         this.showSeatRepo = showSeatRepo;
         this.bookingRepo = bookingRepo;
         this.userRepo = userRepo;
+        this.paymentCaller = paymentCaller;
     }
 
     Set<Movie> getMoviesByCity(String city){
@@ -88,6 +97,18 @@ public class BookingService {
         return showRepo.findById(showId).get();
     }
 
+    BookingResponse getBookingById(int bookingId){
+        Booking booking = bookingRepo.findById(bookingId).get();
+        return new BookingResponse(
+                booking.getBookingId(),
+                booking.getShow().getTheatre().getName(),
+                String.valueOf(booking.getShow().getScreen().getScreenId()),
+                booking.getShow().getMovie(),
+                null,
+                booking.getBookingStatus()
+                );
+    }
+
     List<ShowSeatResponse> getShowSeatsByShow(int showId){
         Show show = getShowById(showId);
         if(show == null){
@@ -103,7 +124,7 @@ public class BookingService {
     }
 
 
-
+    @CircuitBreaker(name = "payment", fallbackMethod = "paymentFailHandler")
     BookingResponse createBooking(BookingRequest bookingRequest){
         BookingResponse bookingResponse;
         try {
@@ -141,6 +162,10 @@ public class BookingService {
         return bookingResponse;
     }
 
+    String paymentFailHandler(){
+        return "Payment failed. Please try again!";
+    }
+
     BookingResponse cancelBooking(int bookingId){
         Booking booking = bookingRepo.findById(bookingId).get();
 
@@ -162,5 +187,9 @@ public class BookingService {
         );
 
         return bookingResponse;
+    }
+
+    Payment createPayment(PaymentRequest paymentRequest){
+        return paymentCaller.createPayment(paymentRequest);
     }
 }

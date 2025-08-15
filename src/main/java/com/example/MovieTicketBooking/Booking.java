@@ -1,6 +1,8 @@
 package com.example.MovieTicketBooking;
 
 import jakarta.persistence.*;
+import org.springframework.context.annotation.Primary;
+
 import java.util.List;
 
 @Entity
